@@ -5,15 +5,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+   
 </head>
 <body>
-    <h> this is the second page </h>
-    <ul> {% for lead in leads %}
-        <li>
-            {{lead}}
-        </li>
-        {% endfor%}
-    </ul>
-   
+    <a href ="/leads"> Go back to leads </a>
+    <hr/>
+    <h1> Create a new lead </h1>
+    <form method="post">
+        {%csrf_token%}
+        {{ form.as_p}}
+        <button type ="submit" > Submit </button>
+    </form>
+    
+    
+       
+
 </body>
 </html>
