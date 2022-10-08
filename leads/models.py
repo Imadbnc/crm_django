@@ -1,4 +1,5 @@
 from secrets import choice
+from sre_constants import CATEGORY_DIGIT
 from unittest.util import _MAX_LENGTH
 from django.db import models
 from django.db.models.signals import post_save
@@ -19,7 +20,8 @@ class Lead(models.Model):
     last_name = models.CharField(max_length = 20)
     age = models.IntegerField(default=0)
     organisation = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    agent = models.ForeignKey('Agent',null=True, blank=True, on_delete=models.SET_NULL)
+    agent = models.ForeignKey('Agent', null=True, blank=True, on_delete=models.SET_NULL)
+    category = models.ForeignKey("Category", null=True, blank=True, on_delete=models.SET_NULL )
     
     
     def __str__(self):
@@ -31,6 +33,12 @@ class Agent(models.Model):
 
     def __str__(self):
         return self.user.username
+
+class Category(models.Model):
+    name= models.CharField(max_length=30) # New, Contacted, converted, Unconverted
+    organisation = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.name
 
 def post_user_created_signal(sender, instance, created, **kwargs):
     if created:
