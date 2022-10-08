@@ -7,7 +7,7 @@
       <div class="flex flex-col text-center w-full mb-20">
         <h1 class="sm:text-4xl text-3xl font-medium title-font mb-2 text-gray-900">Categories</h1>
         <p class="lg:w-2/3 mx-auto leading-relaxed text-base">
-            This categories segment the leads
+            These categories segment the leads
         </p>
       </div>
       <div class="lg:w-2/3 w-full mx-auto overflow-auto">
@@ -24,15 +24,16 @@
               <td class="px-4 py-3">{{ unassigned_lead_count }}</td>
             </tr>
             {% for category in category_list %}
-            <tr>
-                <td class="px-4 py-3">{{category.name}}</td>
-                <td class="px-4 py-3">TODO count</td>
-              </tr>
+                <tr>
+                  <td class="px-4 py-3">
+                    <a href="{% url 'leads:category-detail' category.pk %}"> {{category.name}}</a> 
+                  </td>    
+                  <td class="px-4 py-3">TODO count</td>
+                </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
     </div>
   </section>
-
-{% endblock content %}
+  {% endblock content %}

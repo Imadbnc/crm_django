@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.views import generic
 from agents.mixins import OrganisorAndLoginRequiredMixin
 from .models import Lead, Agent, Category
-from .forms import LeadForm,LeadModelForm, CustumUserCreationForm,AssingAgentForm
+from .forms import LeadForm,LeadModelForm, CustumUserCreationForm,AssingAgentForm, LeadCategoryUpdateForm
 
 class SignupView(generic.CreateView):
     template_name = "registration/signup.html"
@@ -203,6 +203,46 @@ class CategoryListView(LoginRequiredMixin, generic.ListView):
         else:
             queryset = Category.objects.filter(organisation=user.agent.organisation)
         return queryset
+    
+class CategoryDetailView(LoginRequiredMixin, generic.DetailView):
+    template_name = "leads/category_detail.html"
+    context_object_name = "category"
+
+    # def get_context_data(self, **kwargs):
+    #     context = super(CategoryDetailView, self).get_context_data(**kwargs)
+    #     leads = self.get_object().leads.all()
+
+    #     context.update({
+    #         "leads" : leads
+    #     })
+    #     return context
+
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_organisor:
+            queryset = Category.objects.filter(organisation=user.userprofile)
+        else:
+            queryset = Category.objects.filter(organisation=user.agent.organisation)
+        return queryset
+
+class LeadCategoryUpdateView(LoginRequiredMixin, generic.UpdateView):
+
+    template_name = "leads/lead_category_update.html"
+    form_class = LeadCategoryUpdateForm
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_organisor:
+            queryset = Lead.objects.filter(organisation=user.userprofile)
+        else:
+            queryset = Lead.objects.filter(organisation=user.agent.organisation)
+            queryset = queryset.filter(agent__user=user)
+        return queryset
+
+    def get_success_url(self):
+        return reverse("leads:lead-list")
+
 
 
 
