@@ -241,7 +241,7 @@ class LeadCategoryUpdateView(LoginRequiredMixin, generic.UpdateView):
         return queryset
 
     def get_success_url(self):
-        return reverse("leads:lead-list")
+        return reverse("leads:lead-detail", kwargs={"pk" : self.get_object().id })
 
 
 
