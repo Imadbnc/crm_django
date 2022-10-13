@@ -5,9 +5,10 @@ import environ
 env = environ.Env(
     DEBUG=(bool, False)
 )
-READ_DOT_ENV_FILE= env.bool('READ_DOT_ENV_FILE', default=False)
-if READ_DOT_ENV_FILE:
-    environ.Env.read_env()
+
+# READ_DOT_ENV_FILE= env.bool('READ_DOT_ENV_FILE', default=False)
+# if READ_DOT_ENV_FILE:
+environ.Env.read_env()
 
 DEBUG = env('DEBUG')
 
@@ -36,7 +37,7 @@ INSTALLED_APPS = [
 
     # Local apps
     'leads',
-    'agents'
+    'agents',
 ]
 
 MIDDLEWARE = [
@@ -75,11 +76,19 @@ WSGI_APPLICATION = 'djcrm.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE':'django.db.backends.postgresql_psycopg2',
+        'NAME': "djcrm",
+        'USER': "djcrmuser", 
+        'PASSWORD':"djcrm1234", 
+        'HOST' :"localhost",
+        'PORT': "",
     }
 }
-
+# env('DB_NAME'),
+# env('DB_USER'),
+# env('DB_PASSWORD'),
+#  env('DB_HOST'),
+# env('DB_PORT'),
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
