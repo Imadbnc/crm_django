@@ -7,7 +7,7 @@ from django.contrib.auth.views import (
     PasswordResetConfirmView, PasswordResetCompleteView
 )
 from django.urls import path, include
-from leads.views import landing_page, LandingPageViews, SignupView
+from leads.views import LandingPageViews, SignupView
 
 
 
