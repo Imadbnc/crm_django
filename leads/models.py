@@ -37,11 +37,11 @@ class Agent(models.Model):
     def __str__(self):
         return self.user.username
 
-class Category(models.Model):
-    name= models.CharField(max_length=30) # New, Contacted, converted, Unconverted
-    organisation = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    def __str__(self):
-        return self.name
+# class Category(models.Model):
+#     name= models.CharField(max_length=30) # New, Contacted, converted, Unconverted
+#     organisation = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+#     def __str__(self):
+#         return self.name
 
 def post_user_created_signal(sender, instance, created, **kwargs):
     if created:
