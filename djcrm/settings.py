@@ -6,9 +6,9 @@ env = environ.Env(
     DEBUG=(bool, False)
 )
 
-READ_DOT_ENV_FILE = env.bool('READ_DOT_ENV_FILE', default=False)
-if READ_DOT_ENV_FILE:
-    environ.Env.read_env()
+# READ_DOT_ENV_FILE = env.bool('READ_DOT_ENV_FILE', default=False)
+# if READ_DOT_ENV_FILE:
+environ.Env.read_env()
 
 DEBUG = env('DEBUG')
 
@@ -79,11 +79,11 @@ WSGI_APPLICATION = 'djcrm.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE':'django.db.backends.postgresql_psycopg2',
-        'NAME':env('DB_NAME') ,
-        'USER': env('DB_USER'),   
-        'PASSWORD': env('DB_PASSWORD'),  
-        'HOST' :env('DB_HOST'),
-        'PORT': env('DB_PORT'),
+        'NAME':'djcrm' ,
+        'USER': 'djcrmuser',   
+        'PASSWORD': 'djcrm1234',  
+        'HOST' :'localhost',
+        'PORT': '',
     }
 }
 # ,
