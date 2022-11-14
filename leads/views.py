@@ -1,6 +1,7 @@
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 from django.http import HttpResponse
 from django.views import generic
 from agents.mixins import OrganisorAndLoginRequiredMixin
@@ -78,6 +79,7 @@ class LeadCreateView(OrganisorAndLoginRequiredMixin, generic.CreateView):
             from_email = "test@ test.com",
             recipient_list=["test2@test.com"]
         )
+        messages.success(self.request, 'You have succesfully create a lead')
         return super(LeadCreateView, self).form_valid(form)
         
 class LeadUpdateView(OrganisorAndLoginRequiredMixin, generic.UpdateView):
