@@ -1,4 +1,5 @@
 from django.core.mail import send_mail
+from django.http.response import JsonResponse
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
@@ -182,3 +183,12 @@ class LeadCategoryUpdateView(LoginRequiredMixin, generic.UpdateView):
     def get_success_url(self):
         return reverse("leads:lead-detail", kwargs={"pk" : self.get_object().id })
 
+class LeadjsonView(generic.View):
+    def get(self, request, *args, **kwargs):
+        
+        qc = Lead.objects.all()
+        
+        return JsonResponse({
+            'name':'test',
+            'age':25,
+        })
