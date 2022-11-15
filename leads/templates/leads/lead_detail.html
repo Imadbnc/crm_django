@@ -38,8 +38,23 @@
           </div>
           
         </div>
-        <img alt="ecommerce" class="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded" src="https://dummyimage.com/400x400">
       </div>
+      <a href="{% url 'leads:lead-followup-create' lead.pk %} " class="text-white w-full bg-blue-500 hover:bg-blue-600 px-3 py-2 rounded-md"> add a followup </a>
+      <div>
+      {% for followup in lead.followups.all %}
+       
+        {{ followup.notes }}
+
+        {% if followup.file %}
+          <a href="{{followup.file.url}}" download>{{followup.file.name}}</a>
+        {% endif %}
+
+      {% endfor %}
+
+
+      </div>
+
+
     </div>
   </section>
 
