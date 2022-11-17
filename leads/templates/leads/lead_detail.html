@@ -40,13 +40,14 @@
         </div>
       </div>
       <a href="{% url 'leads:lead-followup-create' lead.pk %} " class="text-white w-full bg-blue-500 hover:bg-blue-600 px-3 py-2 rounded-md"> add a followup </a>
-      <div>
+      <div class="px-10 py-10">
       {% for followup in lead.followups.all %}
+        <div class="px-5" > Notes (<a href="{% url 'leads:lead-followup-update' followup.pk %}" class="text-blue-500 hover:text-blue-700">update</a>)</div>
        
-        {{ followup.notes }}
+        {{ followup.notes }} <br>
 
         {% if followup.file %}
-          <a href="{{followup.file.url}}" download>{{followup.file.name}}</a>
+          <a href="{{followup.file.url}}" download  class="text-blue-500 hover:text-blue-700"> {{followup.file.name}} download </a>
         {% endif %}
 
       {% endfor %}
