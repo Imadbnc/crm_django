@@ -7,13 +7,14 @@ from django.contrib.auth.views import (
     PasswordResetConfirmView, PasswordResetCompleteView
 )
 from django.urls import path, include
-from leads.views import LandingPageViews, SignupView
+from leads.views import LandingPageViews, SignupView, DashboardView
 
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', LandingPageViews.as_view(), name='landing-page'),
+    path('dashboard/', DashboardView.as_view(), name='dashboard'),
     path('leads/', include('leads.urls', namespace ="leads")),
     path('agents/', include('agents.urls', namespace ="agents")),
     path('signup/', SignupView.as_view(), name='signup'),

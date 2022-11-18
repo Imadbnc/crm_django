@@ -1,3 +1,4 @@
+import datetime
 from django.core.mail import send_mail
 from django.http.response import JsonResponse
 from django.shortcuts import render, redirect, reverse
@@ -20,7 +21,49 @@ class SignupView(generic.CreateView):
 class LandingPageViews(generic.TemplateView):
     template_name = "landing.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect("dashboard")
+        return super().dispatch(request, *args, **kwargs)
 
+
+class DashboardView(OrganisorAndLoginRequiredMixin, generic.TemplateView):
+    template_name = "dashboard.html"
+    
+    def get_context_data(self, **kwargs):
+        context=super(DashboardView,self).get_context_data(**kwargs)
+        user= self.request.user
+
+        #How many leads we have in total
+        total_lead_count = Lead.objects.filter(organisation= user.userprofile).count()
+
+        # How many new leads in the last 30 days
+        thirty_days_ago = datetime.date.today() - datetime.timedelta(days=30)
+        total_in_past_thirty = Lead.objects.filter(
+            organisation=user.userprofile,
+            date_added__gte=thirty_days_ago
+        ).count()
+
+        #How many converted leads in hte last 30 days
+        converted_category = Category.objects.get(name="Converted")
+        converted_in_past30 = Lead.objects.filter(
+            organisation=user.userprofile,
+            category=converted_category,
+            converted_date__gte=thirty_days_ago
+        ).count()
+
+
+
+        context.update({
+            "total_lead_count":total_lead_count,
+            "total_in_past_thirty":total_in_past_thirty,
+            "converted_in_past30":converted_in_past30
+        })
+
+
+
+        return context
+    
 class LeadListView(LoginRequiredMixin, generic.ListView):
     template_name = "leads/lead_list.html"
     context_object_name = "leads"
@@ -82,7 +125,8 @@ class LeadCreateView(OrganisorAndLoginRequiredMixin, generic.CreateView):
         )
         messages.success(self.request, 'You have succesfully create a lead')
         return super(LeadCreateView, self).form_valid(form)
-        
+
+
 class LeadUpdateView(OrganisorAndLoginRequiredMixin, generic.UpdateView):
     template_name = "leads/lead_update.html"
     form_class = LeadModelForm
@@ -153,7 +197,8 @@ class CategoryListView(LoginRequiredMixin, generic.ListView):
         else:
             queryset = Category.objects.filter(organisation=user.agent.organisation)
         return queryset
-    
+
+
 class CategoryDetailView(LoginRequiredMixin, generic.DetailView):
     template_name = "leads/category_detail.html"
     context_object_name = "category"
@@ -165,6 +210,7 @@ class CategoryDetailView(LoginRequiredMixin, generic.DetailView):
         else:
             queryset = Category.objects.filter(organisation=user.agent.organisation)
         return queryset
+
 
 class LeadCategoryUpdateView(LoginRequiredMixin, generic.UpdateView):
 
@@ -182,6 +228,17 @@ class LeadCategoryUpdateView(LoginRequiredMixin, generic.UpdateView):
 
     def get_success_url(self):
         return reverse("leads:lead-detail", kwargs={"pk" : self.get_object().id })
+
+    def form_valid(self,form):
+        instance = form.save(commit=False)
+        converted_category = Category.objects.get(name='Converted')
+        if form.cleaned_data["category"] == converted_category:
+            # update the date at wich this lead was converted
+            if self.get_object().category != converted_category:
+                instance.converted_date = datetime.datetime.now()
+        instance.save()
+        return super(LeadCategoryUpdateView, self).form_valid(form)
+
 
 class FollowUpCreateView(LoginRequiredMixin, generic.CreateView):
     template_name = "leads/followup_create.html"
@@ -203,6 +260,7 @@ class FollowUpCreateView(LoginRequiredMixin, generic.CreateView):
         followup.lead = lead
         followup.save()
         return super(FollowUpCreateView, self).form_valid(form)
+
 
 class LeadjsonView(generic.View):
     def get(self, request, *args, **kwargs):
@@ -233,8 +291,6 @@ class FollowUpdateView(LoginRequiredMixin, generic.UpdateView):
         return reverse("leads:lead-detail", kwargs={"pk" : self.get_object().lead.id })
 
 
-
-
 class FollowUpDeleteView(OrganisorAndLoginRequiredMixin,generic.DeleteView):
     template_name = "leads/followup_delete.html"
     
@@ -251,3 +307,4 @@ class FollowUpDeleteView(OrganisorAndLoginRequiredMixin,generic.DeleteView):
             queryset = FollowUp.objects.filter(lead__organisation=user.agent.organisation)
             queryset = queryset.filter(lead__agent__user=user)
         return queryset
+
