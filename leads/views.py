@@ -262,15 +262,15 @@ class FollowUpCreateView(LoginRequiredMixin, generic.CreateView):
         return super(FollowUpCreateView, self).form_valid(form)
 
 
-class LeadjsonView(generic.View):
-    def get(self, request, *args, **kwargs):
+# class LeadjsonView(generic.View):
+#     def get(self, request, *args, **kwargs):
         
-        qc = Lead.objects.all()
+#         qc = Lead.objects.all()
         
-        return JsonResponse({
-            'name':'test',
-            'age':25,
-        })
+#         return JsonResponse({
+#             'name':'test',
+#             'age':25,
+#         })
 
 
 class FollowUpdateView(LoginRequiredMixin, generic.UpdateView):
